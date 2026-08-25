@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#173b32">
+    <title>MYCFO - Seu ciclo financeiro</title>
+    <meta name="description" content="Planejamento financeiro pessoal por ciclos, sem surpresas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="system-screen" id="boot-screen">
+        <div class="system-card"><div class="brand-mark">M</div><h1>MYCFO</h1><p>Preparando seu ciclo financeiro...</p><div class="loading-line"></div></div>
+    </section>
+
+    <section class="system-screen hidden" id="auth-screen">
+        <div class="auth-layout">
+            <div class="auth-story">
+                <div class="brand auth-brand"><div class="brand-mark">M</div><div><strong>MYCFO</strong><span>clareza no seu ciclo</span></div></div>
+                <p class="eyebrow">SEU DINHEIRO, SEU RITMO</p>
+                <h1>Decisões mais leves começam com <em>clareza.</em></h1>
+                <p>Entre com seu e-mail para acompanhar ciclos, compromissos e o valor realmente livre.</p>
+            </div>
+            <div class="auth-panel">
+                <div id="auth-form-wrap">
+                    <p class="eyebrow">ACESSO SEGURO</p>
+                    <h2>Entrar no MYCFO</h2>
+                    <p>Enviaremos um link de acesso. Você não precisa criar senha.</p>
+                    <form id="auth-form">
+                        <label class="form-field wide"><span>Seu e-mail</span><input type="email" id="auth-email" autocomplete="email" placeholder="voce@email.com" required></label>
+                        <button class="button primary auth-submit" type="submit"><i class="uil uil-envelope-check"></i>Receber link de acesso</button>
+                    </form>
+                    <p class="auth-message" id="auth-message" aria-live="polite"></p>
+                </div>
+                <div class="hidden" id="config-error">
+                    <p class="eyebrow">CONFIGURAÇÃO PENDENTE</p><h2>Supabase não configurado</h2><p>Defina as variáveis descritas no arquivo <code>.env.example</code> e gere uma nova build.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="app-shell hidden" id="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="brand-mark">M</div>
+                <div><strong>MYCFO</strong><span>clareza no seu ciclo</span></div>
+            </div>
+
+            <nav class="main-nav" aria-label="Navegação principal">
+                <button class="nav-item active" data-view="dashboard"><i class="uil uil-estate"></i><span>Visão do ciclo</span></button>
+                <button class="nav-item" data-view="transactions"><i class="uil uil-receipt"></i><span>Lançamentos</span></button>
+                <button class="nav-item" data-view="planning"><i class="uil uil-chart-pie"></i><span>Planejamento</span></button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="storage-card"><i class="uil uil-cloud-check"></i><div><strong>Dados protegidos</strong><span>Sincronizados no Supabase</span></div></div>
+                <div class="sidebar-user"><div><strong id="sidebar-user-name">Minha conta</strong><span id="sidebar-user-email">--</span></div><button class="icon-button" id="sign-out" title="Sair" aria-label="Sair"><i class="uil uil-signout"></i></button></div>
+                <button class="nav-item" id="open-settings"><i class="uil uil-setting"></i><span>Preferências e backup</span></button>
+            </div>
+        </aside>
+
+        <div class="mobile-backdrop" id="mobile-backdrop"></div>
+
+        <main class="main-content">
+            <header class="topbar">
+                <button class="icon-button mobile-menu" id="mobile-menu" aria-label="Abrir menu"><i class="uil uil-bars"></i></button>
+                <div class="cycle-switcher" aria-label="Selecionar ciclo">
+                    <button class="icon-button" id="previous-cycle" aria-label="Ciclo anterior"><i class="uil uil-angle-left"></i></button>
+                    <button class="cycle-label" id="current-cycle-button" title="Voltar ao ciclo atual"><span>Ciclo atual</span><strong id="cycle-label">--</strong></button>
+                    <button class="icon-button" id="next-cycle" aria-label="Próximo ciclo"><i class="uil uil-angle-right"></i></button>
+                </div>
+                <div class="topbar-actions">
+                    <span class="sync-status" id="sync-status"><i class="uil uil-cloud-check"></i><span>Sincronizado</span></span>
+                    <label class="search-box" for="global-search"><i class="uil uil-search"></i><input id="global-search" type="search" placeholder="Buscar lançamento" autocomplete="off"></label>
+                    <button class="button primary" id="quick-add"><i class="uil uil-plus"></i><span>Novo lançamento</span></button>
+                </div>
+            </header>
+
+            <div class="content">
+                <section class="view active" id="view-dashboard">
+                    <div class="hero-heading reveal">
+                        <div><p class="eyebrow" id="greeting">SEU CICLO FINANCEIRO</p><h1>Seu dinheiro,<br><em>sem sustos.</em></h1></div>
+                        <p class="hero-copy" id="cycle-summary">Organize o que entrou, proteja o que ainda vai sair e saiba o que está realmente livre.</p>
+                    </div>
+
+                    <div class="migration-banner hidden" id="migration-banner">
+                        <div><i class="uil uil-cloud-upload"></i><div><strong>Encontramos dados neste navegador</strong><span>Importe seus lançamentos antigos para a nova base protegida.</span></div></div>
+                        <div><button class="button ghost" id="dismiss-migration">Agora não</button><button class="button secondary" id="migrate-local-data">Importar dados</button></div>
+                    </div>
+
+                    <div class="metric-grid reveal delay-1">
+                        <article class="metric-card featured"><div class="metric-topline"><span>Livre até o fim do ciclo</span><i class="uil uil-sun"></i></div><strong class="metric-value" id="safe-to-spend">R$ 0,00</strong><p id="safe-caption">Depois das despesas e valores planejados</p></article>
+                        <article class="metric-card"><span>Resultado realizado</span><strong class="metric-value" id="realized-result">R$ 0,00</strong><p id="realized-caption">Recebido menos pago</p></article>
+                        <article class="metric-card"><span>Receitas do ciclo</span><strong class="metric-value positive" id="cycle-income">R$ 0,00</strong><p id="income-caption">R$ 0,00 já recebido</p></article>
+                        <article class="metric-card"><span>Despesas do ciclo</span><strong class="metric-value negative" id="cycle-expense">R$ 0,00</strong><p id="expense-caption">R$ 0,00 já pago</p></article>
+                    </div>
+
+                    <div class="dashboard-grid reveal delay-2">
+                        <article class="panel budget-panel">
+                            <div class="panel-heading"><div><p class="eyebrow">RITMO DO CICLO</p><h2>Orçamento sob controle</h2></div><span class="status-chip" id="budget-status">Sem planejamento</span></div>
+                            <div class="budget-visual">
+                                <div class="budget-ring" id="budget-ring"><div><strong id="budget-percent">0%</strong><span>utilizado</span></div></div>
+                                <div class="budget-details"><div><span>Planejado</span><strong id="budget-total">R$ 0,00</strong></div><div><span>Consumido</span><strong id="budget-spent">R$ 0,00</strong></div><div><span>Tempo do ciclo</span><strong id="time-progress">0%</strong></div></div>
+                            </div>
+                            <button class="text-button" data-go-to="planning">Revisar planejamento <i class="uil uil-arrow-right"></i></button>
+                        </article>
+                        <article class="panel bills-panel">
+                            <div class="panel-heading"><div><p class="eyebrow">PRÓXIMOS 7 DIAS</p><h2>Contas que pedem atenção</h2></div><span class="counter" id="upcoming-count">0</span></div>
+                            <div class="stack-list" id="upcoming-list"></div>
+                        </article>
+                    </div>
+
+                    <article class="panel recent-panel reveal delay-3">
+                        <div class="panel-heading"><div><p class="eyebrow">MOVIMENTAÇÃO</p><h2>Lançamentos recentes</h2></div><button class="text-button" data-go-to="transactions">Ver todos <i class="uil uil-arrow-right"></i></button></div>
+                        <div class="transaction-list" id="recent-transactions"></div>
+                    </article>
+                </section>
+
+                <section class="view" id="view-transactions">
+                    <div class="page-heading"><div><p class="eyebrow">ORGANIZAÇÃO</p><h1>Seus lançamentos</h1><p>Edite, confirme pagamentos e encontre qualquer movimentação.</p></div><button class="button primary" data-add-transaction><i class="uil uil-plus"></i>Adicionar</button></div>
+                    <div class="toolbar panel">
+                        <div class="segmented" id="type-filter"><button class="active" data-filter-type="all">Todos</button><button data-filter-type="income">Receitas</button><button data-filter-type="expense">Despesas</button></div>
+                        <label class="select-field"><span>Status</span><select id="status-filter"><option value="all">Todos</option><option value="paid">Realizados</option><option value="pending">Pendentes</option></select></label>
+                    </div>
+                    <article class="panel table-panel">
+                        <div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Data</th><th>Categoria</th><th>Status</th><th>Valor</th><th></th></tr></thead><tbody id="transactions-table"></tbody></table></div>
+                        <div class="mobile-transaction-list" id="mobile-transactions"></div>
+                        <div class="empty-state hidden" id="transactions-empty"><i class="uil uil-receipt-alt"></i><h3>Nenhum lançamento encontrado</h3><p>Comece pelo que já aconteceu hoje.</p><button class="button secondary" data-add-transaction>Adicionar lançamento</button></div>
+                    </article>
+                </section>
+
+                <section class="view" id="view-planning">
+                    <div class="page-heading"><div><p class="eyebrow">PLANEJAMENTO</p><h1>Dê um destino ao dinheiro</h1><p>Defina limites por categoria para o ciclo selecionado.</p></div><button class="button primary" id="add-budget"><i class="uil uil-plus"></i>Planejar categoria</button></div>
+                    <div class="planning-summary panel"><div><span>Total planejado</span><strong id="planning-total">R$ 0,00</strong></div><div><span>Já utilizado</span><strong id="planning-used">R$ 0,00</strong></div><div><span>Ainda reservado</span><strong id="planning-remaining">R$ 0,00</strong></div><p><i class="uil uil-info-circle"></i> O valor livre considera despesas registradas e o orçamento que ainda não foi consumido.</p></div>
+                    <div class="budget-list" id="budget-list"></div>
+                    <div class="empty-state panel hidden" id="budgets-empty"><i class="uil uil-chart-pie-alt"></i><h3>Seu ciclo ainda não tem um plano</h3><p>Comece pelas despesas que mais pesam no mês.</p><button class="button secondary" id="empty-add-budget">Planejar primeira categoria</button></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="transaction-modal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="transaction-modal-title">
+            <div class="modal-header"><div><p class="eyebrow">MOVIMENTAÇÃO</p><h2 id="transaction-modal-title">Novo lançamento</h2></div><button class="icon-button close-modal" aria-label="Fechar"><i class="uil uil-times"></i></button></div>
+            <form id="transaction-form">
+                <input type="hidden" id="transaction-id">
+                <div class="type-picker"><label><input type="radio" name="transaction-type" value="expense" checked><span><i class="uil uil-arrow-up-right"></i>Despesa</span></label><label><input type="radio" name="transaction-type" value="income"><span><i class="uil uil-arrow-down-left"></i>Receita</span></label></div>
+                <label class="form-field wide"><span>Descrição</span><input type="text" id="transaction-description" maxlength="80" placeholder="Ex.: Aluguel" required></label>
+                <div class="form-grid">
+                    <label class="form-field"><span>Valor</span><div class="money-input"><span>R$</span><input type="number" id="transaction-amount" min="0.01" step="0.01" placeholder="0,00" required></div></label>
+                    <label class="form-field"><span>Data</span><input type="date" id="transaction-date" required></label>
+                    <label class="form-field"><span>Categoria</span><select id="transaction-category" required></select></label>
+                    <label class="form-field"><span>Status</span><select id="transaction-status"><option value="paid">Realizado</option><option value="pending">Pendente</option></select></label>
+                </div>
+                <label class="check-field"><input type="checkbox" id="transaction-repeat"><span>Repetir este lançamento no próximo ciclo</span></label>
+                <div class="modal-actions"><button type="button" class="button ghost close-modal">Cancelar</button><button type="submit" class="button primary">Salvar lançamento</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="budget-modal" aria-hidden="true">
+        <div class="modal small" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
+            <div class="modal-header"><div><p class="eyebrow">PLANEJAMENTO</p><h2 id="budget-modal-title">Planejar categoria</h2></div><button class="icon-button close-modal" aria-label="Fechar"><i class="uil uil-times"></i></button></div>
+            <form id="budget-form"><input type="hidden" id="budget-id"><label class="form-field wide"><span>Categoria</span><select id="budget-category" required></select></label><label class="form-field wide"><span>Limite para este ciclo</span><div class="money-input"><span>R$</span><input type="number" id="budget-amount" min="0.01" step="0.01" placeholder="0,00" required></div></label><div class="modal-actions"><button type="button" class="button ghost close-modal">Cancelar</button><button type="submit" class="button primary">Salvar planejamento</button></div></form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settings-modal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+            <div class="modal-header"><div><p class="eyebrow">PREFERÊNCIAS</p><h2 id="settings-title">Seu jeito de organizar</h2></div><button class="icon-button close-modal" aria-label="Fechar"><i class="uil uil-times"></i></button></div>
+            <form id="settings-form">
+                <div class="settings-block"><label class="form-field"><span>Seu nome</span><input type="text" id="user-name" maxlength="40" placeholder="Como devemos chamar você?"></label><label class="form-field"><span>O ciclo começa no dia</span><input type="number" id="cycle-start-day" min="1" max="28" required></label></div>
+                <div class="backup-block"><div><strong>Backup dos dados</strong><p>Exporte uma cópia da nuvem ou importe o JSON da versão antiga.</p></div><div class="backup-actions"><button type="button" class="button secondary" id="export-backup"><i class="uil uil-export"></i>Exportar</button><button type="button" class="button ghost" id="import-backup"><i class="uil uil-import"></i>Importar</button></div><input type="file" id="backup-file" accept="application/json" hidden></div>
+                <div class="modal-actions"><button type="button" class="button ghost close-modal">Cancelar</button><button type="submit" class="button primary">Salvar preferências</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
