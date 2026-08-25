@@ -44,4 +44,6 @@ O workflow `deploy-pages.yml` publica a branch `main` no GitHub Pages. Configure
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
+Depois dos secrets e redirects estarem validados, defina a variável de repositório `PRODUCTION_READY=true` para liberar o deploy.
+
 No Supabase Auth, inclua a URL do GitHub Pages em **Site URL** e **Redirect URLs** antes de testar o login por link mágico.
